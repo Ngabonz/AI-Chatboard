@@ -1,0 +1,117 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm>
+#include <unordered_map>
+
+using namespace std;
+
+class EnhancedChatbot {
+private:
+    unordered_map<string, string> responses;
+
+    string analyzeSentiment(const string& input) {
+        vector<string> positiveWords{"good", "great", "happy", "love", "excellent"};
+        vector<string> negativeWords{"bad", "sad", "hate", "terrible", "awful"};
+
+        int positiveCount = 0, negativeCount = 0;
+        string word;
+        for (const char& c : input) {
+            if (isspace(c)) {
+                if (find(positiveWords.begin(), positiveWords.end(), word) != positiveWords.end()) {
+                    positiveCount++;
+                } else if (find(negativeWords.begin(), negativeWords.end(), word) != negativeWords.end()) {
+                    negativeCount++;
+                }
+                word.clear();
+            } else {
+                word += tolower(c);
+            }
+        }
+        // Check the last word
+        if (find(positiveWords.begin(), positiveWords.end(), word) != positiveWords.end()) {
+            positiveCount++;
+        } else if (find(negativeWords.begin(), negativeWords.end(), word) != negativeWords.end()) {
+            negativeCount++;
+        }
+
+        if (positiveCount > negativeCount) {
+            return "positive";
+        } else if (negativeCount > positiveCount) {
+            return "negative";
+        }
+        return "neutral";
+    }
+
+    string generateResponse(const string& input) {
+        // Subject-based responses
+        if(input.find("greeting")!=string::npos){
+            return "hello how can I help you?";
+        }
+        if (input.find("math") != string::npos || input.find("mathematics") != string::npos) {
+            return "Mathematics is the study of numbers, shapes, and patterns. It encompasses various fields such as algebra, geometry, calculus, and statistics. For example, calculus deals with rates of change and the accumulation of quantities.";
+        }
+        if (input.find("history") != string::npos) {
+            return "History is the study of past events, particularly in human affairs. It covers various epochs, such as ancient, medieval, and modern history, and can include studies of civilizations, wars, and cultural developments.";
+        }
+        if (input.find("computer") != string::npos) {
+            return "Computer science is the study of computers and computational systems. It includes areas such as algorithms, data structures, software development, and artificial intelligence. For instance, algorithms are step-by-step procedures for solving problems.";
+        }
+        if (input.find("science") != string::npos) {
+            return "Science is the systematic enterprise that builds and organizes knowledge in the form of testable explanations and predictions about the universe. Key branches include physics, chemistry, biology, and earth sciences.";
+        }
+        if (input.find("literature") != string::npos) {
+            return "Literature refers to written works, especially those considered of superior or lasting artistic merit. This includes poetry, novels, plays, and essays, exploring themes, human experiences, and cultural contexts.";
+        }
+        if (input.find("geography") != string::npos) {
+            return "Geography is the study of places and the relationships between people and their environments. It covers physical geography (landforms, climate) and human geography (cultural landscapes, urban development).";
+        }
+        if (input.find("art") != string::npos) {
+            return "Art is a diverse range of human activities that involve the creation of visual, auditory, or performance artifacts. It includes painting, sculpture, music, dance, and theater, often reflecting cultural values and emotions.";
+        }
+        if (input.find("economics") != string::npos) {
+            return "Economics is the social science that studies the production, distribution, and consumption of goods and services. It covers microeconomics (individual and business decisions) and macroeconomics (national economies).";
+        }
+        if (input.find("biology") != string::npos) {
+            return "Biology is the study of living organisms, encompassing various fields such as genetics, ecology, and evolutionary biology. It explores the structure, function, growth, and evolution of living things.";
+        }
+        if (input.find("physics") != string::npos) {
+            return "Physics is the natural science that studies matter, its motion and behavior through space and time, and the related entities of energy and force. Key areas include mechanics, thermodynamics, and quantum physics.";
+        }
+        return "I'm not sure how to respond to that. Could you please specify a different subject?";
+    }
+
+public:
+    EnhancedChatbot() {
+        // Initialize with common responses
+        responses["math"] = "Mathematics is the study of numbers, shapes, and patterns.";
+        responses["history"] = "History is the study of past events, particularly in human affairs.";
+        responses["computer"] = "Computer science is the study of computers and computational systems.";
+        // Additional subjects can be initialized here as needed
+    }
+
+    void chat() {
+        string userInput;
+        cout << "Welcome to the AI Chatbot! Type 'exit' to end the conversation." << endl;
+
+        while (true) {
+            cout << "You: ";
+            getline(cin, userInput);
+            if (userInput == "exit") {
+                cout << "Chatbot: Goodbye!" << endl;
+                break;
+            }
+
+            string sentiment = analyzeSentiment(userInput);
+            cout << "Sentiment: " << sentiment << endl; // Output sentiment analysis result
+            string response = generateResponse(userInput);
+            cout << "Chatbot: " << response << endl;
+        }
+    }
+};
+
+int main() {
+    EnhancedChatbot chatbot;
+    chatbot.chat();
+    return 0;
+}
